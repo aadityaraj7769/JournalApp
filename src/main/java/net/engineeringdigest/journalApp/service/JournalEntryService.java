@@ -9,6 +9,7 @@ import net.engineeringdigest.journalApp.repository.JournalEntryRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Component
@@ -21,15 +22,18 @@ public class JournalEntryService {
   @Autowired
   private UserService userService;
 
+  @Transactional
   public void saveEntry(JournalEntry entry, String userName) {
     try {
       User user = userService.findByUserName(userName);
       entry.setDate(LocalDateTime.now());
       JournalEntry saved = journalEntryRepository.save(entry);
       user.getJournalEntries().add(saved);
+      user.setUserName(null);
       userService.saveEntry(user);
     } catch (Exception e) {
       log.error("Error saving journal entry: " + e.getMessage());
+      throw new RuntimeException("An error occured while saving the entry. ", e);
     }
   }
 
