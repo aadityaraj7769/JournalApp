@@ -1,6 +1,7 @@
 package net.engineeringdigest.journalApp.service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import net.engineeringdigest.journalApp.entity.JournalEntry;
@@ -9,6 +10,8 @@ import net.engineeringdigest.journalApp.repository.JournalEntryRepository;
 import net.engineeringdigest.journalApp.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 
@@ -19,6 +22,8 @@ public class UserService {
   @Autowired
   private UserRepository userRepository;
 
+  private static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
   public void saveEntry(User entry) {
     try {
       userRepository.save(entry);
@@ -26,6 +31,12 @@ public class UserService {
       log.error("Error saving journal entry: " + e.getMessage());
     }
 
+  }
+
+  public void addNewUser(User user) {
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+    user.setRoles(Arrays.asList("USER"));
+    saveEntry(user);
   }
 
   public List<User> getAll() {
