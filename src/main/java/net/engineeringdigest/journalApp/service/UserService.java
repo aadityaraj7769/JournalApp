@@ -33,10 +33,17 @@ public class UserService {
 
   }
 
-  public void addNewUser(User user) {
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
-    user.setRoles(Arrays.asList("USER"));
-    saveEntry(user);
+  public boolean addNewUser(User user) {
+    try{
+      user.setPassword(passwordEncoder.encode(user.getPassword()));
+      user.setRoles(Arrays.asList("USER"));
+      saveEntry(user);
+      return true;
+    }catch (Exception e) {
+//      log.error("Error saving user: " + e.getMessage());
+      return false;
+    }
+
   }
 
   public void saveAdmin(User user) {

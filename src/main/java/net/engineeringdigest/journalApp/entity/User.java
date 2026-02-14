@@ -2,6 +2,7 @@ package net.engineeringdigest.journalApp.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "users")
 @Getter
 @Setter
+@Builder
 public class User {
 
   @Id
