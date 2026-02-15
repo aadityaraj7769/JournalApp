@@ -1,12 +1,9 @@
 package net.engineeringdigest.journalApp.service;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import net.engineeringdigest.journalApp.entity.JournalEntry;
 import net.engineeringdigest.journalApp.entity.User;
-import net.engineeringdigest.journalApp.repository.JournalEntryRepository;
 import net.engineeringdigest.journalApp.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +37,7 @@ public class UserService {
       saveEntry(user);
       return true;
     }catch (Exception e) {
-//      log.error("Error saving user: " + e.getMessage());
+      log.error("Error saving user: " + e.getMessage());
       return false;
     }
 
