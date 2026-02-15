@@ -1,14 +1,16 @@
 package net.engineeringdigest.journalApp.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import net.engineeringdigest.journalApp.entity.JournalEntry;
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.Optional;
+//import net.engineeringdigest.journalApp.entity.JournalEntry;
+import net.engineeringdigest.journalApp.api.response.WeatherResponse;
 import net.engineeringdigest.journalApp.entity.User;
 import net.engineeringdigest.journalApp.repository.UserRepository;
-import net.engineeringdigest.journalApp.service.JournalEntryService;
+//import net.engineeringdigest.journalApp.service.JournalEntryService;
 import net.engineeringdigest.journalApp.service.UserService;
-import org.bson.types.ObjectId;
+//import org.bson.types.ObjectId;
+import net.engineeringdigest.journalApp.service.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +18,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+//import org.springframework.web.bind.annotation.PathVariable;
+//import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +34,9 @@ public class UserControllerV2 {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private WeatherService weatherService;
 
 //  @GetMapping
 //  public List<User> getAllUsers() {
@@ -54,5 +59,16 @@ public class UserControllerV2 {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     userRepository.deleteByUserName(authentication.getName());
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+  @GetMapping
+  public ResponseEntity<?> greeting() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    WeatherResponse  weatherResponse =  weatherService.getWeather("Mumbai");
+    String greeting = "";
+    if(weatherResponse != null) {
+      greeting = "Weather feels like " + weatherResponse.getCurrent().getFeelslike();
+    }
+    return new ResponseEntity<>("Hii " + authentication.getName() + greeting, HttpStatus.OK);
   }
 }
