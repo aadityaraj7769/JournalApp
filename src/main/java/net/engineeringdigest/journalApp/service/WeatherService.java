@@ -1,6 +1,7 @@
 package net.engineeringdigest.journalApp.service;
 
 import net.engineeringdigest.journalApp.api.response.WeatherResponse;
+import net.engineeringdigest.journalApp.cache.AppCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -15,13 +16,14 @@ public class WeatherService {
   @Value("${weather.api.key}")
   private String apiKey;
 
-  private static final String API = "http://api.weatherstack.com/current?access_key=API_KEY&query=CITY";
-
   @Autowired
   private RestTemplate restTemplate;
 
+  @Autowired
+  private AppCache appCache;
+
   public WeatherResponse getWeather(String city) {
-    String url = API.replace("API_KEY", apiKey).replace("CITY", city);
+    String url = appCache.APP_CACHE.get("weather_api").replace("<api_key>", apiKey).replace("<city>", city);
     ResponseEntity<WeatherResponse> response = restTemplate.exchange(url, HttpMethod.GET, null, WeatherResponse.class);
     return response.getBody();
   }
